@@ -17,10 +17,12 @@ paths:
   /v1/users:
     get:
       tags: [Users]
+      security:
+        - security-model1: []
       summary: Retrieve or filter the list of users 
       operationId: getAllUsers
       parameters:
-        - $ref: '#/components/parameters/PathUserQuery' 
+        - $ref: '#/components/parameters/UserFilter'
       responses:
         '200':
           description: List of users.
@@ -44,7 +46,7 @@ paths:
         '201':
           description: User created.
         '400':
-          $ref: '#/components/responses/ErrorBusiness' # Erreur métier (BF 25)
+          $ref: '#/components/responses/ErrorBusiness' 
 
   /v1/users/{userId}:
     parameters:
@@ -218,6 +220,17 @@ paths:
           description: boat created
         '403':
           $ref: '#/components/responses/ErrorBusiness' 
+  
+  /v1/boundingBox/boats:
+    get:
+      tags: [Boats]
+      summary: Retrieve the list of boats in an area geographic
+      operationId: getAllBoatsInBoundingBox
+      parameters: 
+        - $ref: '#/components/parameters/BoatFilterByBoundingBox'
+      responses:
+        '200':
+          $ref: '#/components/responses/ListBoats'
 
   /v1/boats/{boatId}:
     parameters:
@@ -500,20 +513,20 @@ components:
         boats:
           type: array
           items:
-            $ref: "#/Boat"
+            $ref: "#/components/schemas/Boat"
 
         fishingLog:
-          $ref: "#/FishingLog"
+          $ref: "#/components/schemas/FishingLog"
 
         trips:
           type: array
           items:
-            $ref: "#/Trip"
+            $ref: "#/components/schemas/Trip"
 
         bookings:
           type: array
           items:
-            $ref: "#/Booking"
+            $ref: "#/components/schemas/Booking"
 
     Booking:
       type: object
@@ -533,10 +546,10 @@ components:
           format: float
 
         reservationCreator:
-          $ref: "#/User"
+          $ref: "#/components/schemas/User"
 
         fishingTrip:
-          $ref: "#/Trip"
+          $ref: "#/components/schemas/Trip"
 
     Trip:
       type: object
@@ -590,10 +603,10 @@ components:
           type: integer
 
         organizer:
-          $ref: "#/User"
+          $ref: "#/components/schemas/User"
 
         usedBoat:
-          $ref: "#/Boat"
+          $ref: "#/components/schemas/Boat"
 
         price:
           type: number
@@ -682,7 +695,7 @@ components:
           format: float
 
         owner:
-          $ref: "#/User"
+          $ref: "#/components/schemas/User"
 
     FishingLogPage:
       type: object
@@ -715,7 +728,7 @@ components:
           type: boolean
 
         fishingLog:
-          $ref: "#/FishingLog"
+          $ref: "#/components/schemas/FishingLog"
 
     FishingLog:
       type: object
@@ -726,10 +739,16 @@ components:
         pages:
           type: array
           items:
-            $ref: "#/FishingLogPage"
+            $ref: "#/components/schemas/FishingLogPage"
 
         logOwner:
-          $ref: "#/User"
+          $ref: "#/components/schemas/User"
+
+    ErrorModel:
+      type: object
+      properties:
+        code: {type: integer, description: Business-specific error code}
+        message: {type: string, description: Description of error.}
 
 
         
@@ -837,12 +856,17 @@ components:
       name: filtersBoat
       in: query
       required: false
-      style: deepObject 
       schema:
-        allOf:
-          - $ref: '#/components/schemas/BoatFilterCriteria'
-          - $ref: '#/components/schemas/GeoBoundingBox'
-      description: Allows you to filter boats by characteristics or geographical area.
+        $ref: '#/components/schemas/BoatFilterCriteria'
+      description: Allows you to filter boats by characteristics.
+
+    BoatFilterByBoundingBox:
+      name: filtersBoatByBoundingBox
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/GeoBoundingBox'
+      description: Allows you to filter boats by geographical area.  
   # --------------------
   # RÉPONSES RÉUTILISABLES
   # --------------------
@@ -862,9 +886,9 @@ components:
             items:
               $ref: '#/components/schemas/Boat'    
   security-model1:
-    type: apiKey
-    in: header
-    name: Authorization
-    x-bearer-format: bearer
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+
 security:
   - security-model1: []
