@@ -32,6 +32,17 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
+
     post:
       tags: [Users]
       summary: Create a new user 
@@ -45,8 +56,18 @@ paths:
       responses:
         '201':
           description: User created.
+        '403':
+          $ref: '#/components/responses/ErrorBusiness'
         '400':
-          $ref: '#/components/responses/ErrorBusiness' 
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '409':
+          description: The creation conflicts with the current state (e.g., duplicate).
+        '415':
+          description: The sent data format is not supported (e.g., XML instead of JSON).
+        '500':
+          description: Unexpected internal server error. 
 
   /v1/users/{userId}:
     parameters:
@@ -63,6 +84,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
     put:
       tags: [Users]
       summary: update an user
@@ -76,6 +107,16 @@ paths:
       responses:
         '200':
           description: Change made
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
     delete:
       tags: [Users]
       summary: delete an user
@@ -83,6 +124,14 @@ paths:
       responses:
         '204':
           description: Deletion completed.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
 
   # --------------------
   # ACCÈS AUX SOUS-COLLECTIONS D'UN UTILISATEUR 
@@ -97,6 +146,16 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/ListBoats'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
           
   /v1/users/{userId}/trips:
     parameters:
@@ -114,6 +173,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Trip'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
     
   /v1/users/{userId}/bookings:
     parameters:
@@ -131,6 +200,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Booking'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
 
   # --------------------
   # RESSOURCE CARNET DE PÊCHE (Logbook Pages)
@@ -151,7 +230,17 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/FishingLogPage' 
+                  $ref: '#/components/schemas/FishingLogPage'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error. 
     post:
       tags: [FishingLogs]
       summary: Create a new Fishing Log Page
@@ -165,8 +254,18 @@ paths:
       responses:
         '201':
           description: Fishing Log Page created.
-        '400':
+        '403':
           $ref: '#/components/responses/ErrorBusiness'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '409':
+          description: The creation conflicts with the current state (e.g., duplicate).
+        '415':
+          description: The sent data format is not supported (e.g., XML instead of JSON).
+        '500':
+          description: Unexpected internal server error.
 
   /v1/users/{userId}/fishingLog/fishingLogPages/{pageId}:
     parameters:
@@ -185,6 +284,16 @@ paths:
       responses:
         '200':
           description: Change made
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
 
     delete:
       tags: [FishingLogs]
@@ -193,6 +302,14 @@ paths:
       responses:
         '204':
           description: Deletion completed.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
 
 
   /v1/boats:
@@ -205,9 +322,19 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/ListBoats'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
     post:
       tags: [Boats]
-      summary: Crate a new boat 
+      summary: Create a new boat 
       operationId: createBoat
       requestBody:
         description: Create a new Boat.
@@ -219,7 +346,17 @@ paths:
         '201': 
           description: boat created
         '403':
-          $ref: '#/components/responses/ErrorBusiness' 
+          $ref: '#/components/responses/ErrorBusiness'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '409':
+          description: The creation conflicts with the current state (e.g., duplicate).
+        '415':
+          description: The sent data format is not supported (e.g., XML instead of JSON).
+        '500':
+          description: Unexpected internal server error. 
   
   /v1/boundingBox/boats:
     get:
@@ -231,6 +368,16 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/ListBoats'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
 
   /v1/boats/{boatId}:
     parameters:
@@ -246,6 +393,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Boat'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.  
     put:
       tags: [Boats]
       summary: Update a boat data 
@@ -259,6 +416,16 @@ paths:
       responses:
         '200':
           description: Change made
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
     delete:
       tags: [Boats]
       summary: Delete a boat
@@ -266,6 +433,14 @@ paths:
       responses:
         '204':
           description: Deletion completed.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
 
   /v1/trips:
     get:
@@ -283,9 +458,19 @@ paths:
               type: array
               items:
                 $ref: '#/components/schemas/Trip'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
     post:
       tags: [Trips]
-      summary: Crate a new trip
+      summary: Create a new trip
       operationId: createTrip
       requestBody:
         description: Create a new trip.
@@ -297,7 +482,17 @@ paths:
         '201': 
           description: Trip created
         '403':
-          $ref: '#/components/responses/ErrorBusiness' 
+          $ref: '#/components/responses/ErrorBusiness'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '409':
+          description: The creation conflicts with the current state (e.g., duplicate).
+        '415':
+          description: The sent data format is not supported (e.g., XML instead of JSON).
+        '500':
+          description: Unexpected internal server error. 
 
   /v1/trips/{tripId}:
     parameters:
@@ -313,6 +508,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Trip'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
     put:
       tags: [Trips]
       summary: Update a trip data 
@@ -326,13 +531,31 @@ paths:
       responses:
         '200':
           description: Change made
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
     delete:
       tags: [Trips]
       summary: Delete a trip
       operationId: deleteTrip
       responses:
         '204':
-          description: Deletion completed. 
+          description: Deletion completed.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error. 
 
   /v1/bookings:
     get:
@@ -350,6 +573,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Booking'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
     post:
       tags: [Bookings]
       summary: Create a new booking
@@ -364,7 +597,17 @@ paths:
         '201': 
           description: Booking created
         '403':
-          $ref: '#/components/responses/ErrorBusiness' 
+          $ref: '#/components/responses/ErrorBusiness'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '409':
+          description: The creation conflicts with the current state (e.g., duplicate).
+        '415':
+          description: The sent data format is not supported (e.g., XML instead of JSON).
+        '500':
+          description: Unexpected internal server error. 
 
   /v1/bookings/{bookingId}:
     parameters:
@@ -380,6 +623,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Booking'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
     put:
       tags: [Bookings]
       summary: Update a booking data 
@@ -393,6 +646,16 @@ paths:
       responses:
         '200':
           description: Change made
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
     delete:
       tags: [Bookings]
       summary: Delete a booking
@@ -400,6 +663,14 @@ paths:
       responses:
         '204':
           description: Deletion completed.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
 
   /v1/fishinglog:
     get:
@@ -417,6 +688,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FishingLog'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '403':
+          description: The client is authenticated but lacks access rights.
+        '404':
+          description: The requested resource does not exist.
+        '500':
+          description: Unexpected internal server error.
     
     post:
       tags: [FishingLogs]
@@ -433,6 +714,16 @@ paths:
           description: Fishing log created
         '403':
           $ref: '#/components/responses/ErrorBusiness'
+        '400':
+          description: The request is malformed or invalid.
+        '401':
+          description: The client is not authenticated.
+        '409':
+          description: The creation conflicts with the current state (e.g., duplicate).
+        '415':
+          description: The sent data format is not supported (e.g., XML instead of JSON).
+        '500':
+          description: Unexpected internal server error.
  
 components:
   schemas:
@@ -885,10 +1176,11 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Boat'    
-  security-model1:
-    type: http
-    scheme: bearer
-    bearerFormat: JWT
+  securitySchemes:
+    security-model1:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
 security:
   - security-model1: []
