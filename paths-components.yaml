@@ -1,0 +1,853 @@
+paths:
+  /v1/users:
+    get:
+      tags: [Users]
+      summary: Retrieve or filter the list of users 
+      operationId: getAllUsers
+      parameters:
+        - $ref: '#/components/parameters/PathUserQuery' 
+      responses:
+        '200':
+          description: List of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags: [Users]
+      summary: Create a new user 
+      operationId: createUser
+      requestBody:
+        description: User data to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created.
+        '400':
+          $ref: '#/components/responses/ErrorBusiness' # Erreur métier (BF 25)
+
+  /v1/users/{userId}:
+    parameters:
+      # Utilise un paramètre de type 'path' pour identifier la ressource (bonne pratique)
+      - $ref: '#/components/parameters/PathUserId'
+    get:
+      tags: [Users]
+      summary: Retrieve a specific user
+      operationId: getUserById
+      responses:
+        '200':
+          description: User informations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags: [Users]
+      summary: update an user
+      operationId: updateUser
+      requestBody:
+        description: Update of user's data.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Change made
+    delete:
+      tags: [Users]
+      summary: delete an user
+      operationId: deleteUser
+      responses:
+        '204':
+          description: Deletion completed.
+
+  # --------------------
+  # ACCÈS AUX SOUS-COLLECTIONS D'UN UTILISATEUR 
+  # --------------------
+  /v1/users/{userId}/boats:
+    parameters:
+      - $ref: '#/components/parameters/PathUserId'
+    get:
+      tags: [Users]
+      summary: Retrieve the list of boats of an user
+      operationId: listUserBoats
+      responses:
+        '200':
+          $ref: '#/components/responses/ListBoats'
+          
+  /v1/users/{userId}/trips:
+    parameters:
+      - $ref: '#/components/parameters/PathUserId'
+    get:
+      tags: [Users]
+      summary: Retrieve the list of trips of an user
+      operationId: listUserTrips
+      responses:
+        '200':
+          description: Response containing a list of trips of an user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Trip'
+    
+  /v1/users/{userId}/bookings:
+    parameters:
+      - $ref: '#/components/parameters/PathUserId'
+    get:
+      tags: [Users]
+      summary: Retrieve the list of bookings of an user
+      operationId: listUserBookings
+      responses:
+        '200':
+          description: Response containing a list of bookings of an user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+
+  # --------------------
+  # RESSOURCE CARNET DE PÊCHE (Logbook Pages)
+  # --------------------
+  # Les pages du carnet sont généralement imbriquées sous l'utilisateur
+  /v1/users/{userId}/fishingLog/fishingLogPages:
+    parameters:
+      - $ref: '#/components/parameters/PathUserId'
+    get:
+      tags: [Users]
+      summary: Retrieve all the pages of the fishing log of an user
+      operationId: listFishingLogbookPages
+      responses:
+        '200':
+          description: Response containing the pages of the fishing log of an user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FishingLogPage' 
+    post:
+      tags: [FishingLog]
+      summary: Create a new Fishing Log Page
+      operationId: createFishingLogbookPage
+      requestBody:
+        description: Fishing Log Page to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FishingLogPage'
+      responses:
+        '201':
+          description: Fishing Log Page created.
+        '400':
+          $ref: '#/components/responses/ErrorBusiness'
+
+  /v1/users/{userId}/fishingLog/fishingLogPages/{pageId}:
+    parameters:
+      - $ref: '#/components/parameters/PathUserId'
+      - $ref: '#/components/parameters/PathPageId'
+    put:
+      tags: [FishingLog]
+      summary: Update a fishing log page 
+      operationId: updateFishingLogbookPage
+      requestBody:
+        description: Update of User's Fishing Log Page.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FishingLogPage'
+      responses:
+        '200':
+          description: Change made
+
+    delete:
+      tags: [FishingLog]
+      summary: Delete a fishing log page
+      operationId: deleteFishingLogbookPage
+      responses:
+        '204':
+          description: Deletion completed.
+
+
+  /v1/boats:
+    get:
+      tags: [Boats]
+      summary: Retrieve or filter the list of boats 
+      operationId: getAllBoats
+      parameters:
+        - $ref: '#/components/parameters/BoatFilter' 
+      responses:
+        '200':
+          $ref: '#/components/responses/ListBoats'
+    post:
+      tags: [Boats]
+      summary: Crate a new boat 
+      operationId: createBoat
+      requestBody:
+        description: Create a new Boat.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Boat'
+      responses:
+        '201': 
+          description: boat created
+        '403':
+          $ref: '#/components/responses/ErrorBusiness' 
+
+  /v1/boats/{boatId}:
+    parameters:
+      - $ref: '#/components/parameters/PathBoatId'
+    get:
+      tags: [Boats]
+      summary: Retrieve a specific boat
+      operationId: getBoatById
+      responses:
+        '200':
+          description: Boat informations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Boat'
+    put:
+      tags: [Boats]
+      summary: Update a boat data 
+      operationId: updateBoat
+      requestBody:
+        description: Update of a specific boat.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Boat'
+      responses:
+        '200':
+          description: Change made
+    delete:
+      tags: [Boats]
+      summary: Delete a boat
+      operationId: deleteBoat
+      responses:
+        '204':
+          description: Deletion completed.
+
+  /v1/trips:
+    get:
+      tags: [Trips]
+      summary: Retrieve or filter the list of trips 
+      operationId: getAllTrips
+      parameters:
+        - $ref: '#/components/parameters/TripFilter' 
+      responses:
+        '200':
+          description: Response containing a list of trips.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Trip'
+    post:
+      tags: [Trips]
+      summary: Crate a new trip
+      operationId: createTrip
+      requestBody:
+        description: Create a new trip.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trip'
+      responses:
+        '201': 
+          description: Trip created
+        '403':
+          $ref: '#/components/responses/ErrorBusiness' 
+
+  /v1/trips/{tripId}:
+    parameters:
+      - $ref: '#/components/parameters/PathTripId'
+    get:
+      tags: [Trips]
+      summary: Retrieve a specific trip
+      operationId: getTripById
+      responses:
+        '200':
+          description: Trip informations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trip'
+    put:
+      tags: [Trips]
+      summary: Update a trip data 
+      operationId: updateTrip
+      requestBody:
+        description: Update of a specific trip.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trip'
+      responses:
+        '200':
+          description: Change made
+    delete:
+      tags: [Trips]
+      summary: Delete a trip
+      operationId: deleteTrip
+      responses:
+        '204':
+          description: Deletion completed. 
+
+  /v1/bookings:
+    get:
+      tags: [Bookings]
+      summary: Retrieve or filter the list of bookings 
+      operationId: getAllBookings
+      parameters:
+        - $ref: '#/components/parameters/BookingFilter' 
+      responses:
+        '200':
+          description: Response containing a list of bookings.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+    post:
+      tags: [Bookings]
+      summary: Create a new booking
+      operationId: createBooking
+      requestBody:
+        description: Create a new booking.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '201': 
+          description: Booking created
+        '403':
+          $ref: '#/components/responses/ErrorBusiness' 
+
+  /v1/bookings/{bookingId}:
+    parameters:
+      - $ref: '#/components/parameters/PathBookingId'
+    get:
+      tags: [Bookings]
+      summary: Retrieve a specific booking
+      operationId: getBookingById
+      responses:
+        '200':
+          description: Booking informations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+    put:
+      tags: [Bookings]
+      summary: Update a booking data 
+      operationId: updateBooking
+      requestBody:
+        description: Update of a specific booking.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '200':
+          description: Change made
+    delete:
+      tags: [Bookings]
+      summary: Delete a booking
+      operationId: deleteBooking
+      responses:
+        '204':
+          description: Deletion completed.
+
+  /v1/fishinglog:
+    get:
+      tags: [FishingLogs]
+      summary: Retrieve or filter the list of fishing logs
+      operationId: getAllFishingLogs
+      parameters:
+        - $ref: '#/components/parameters/FishingLogFilter' 
+      responses:
+        '200':
+          description: Response containing a list of fishing logs.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FishingLog'
+    
+    post:
+      tags: [FishingLogs]
+      summary: Create a new fishing log
+      operationId: createFishingLog
+      requestBody:
+        description: Create a new fishing log.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FishingLog'
+      responses:
+        '201': 
+          description: Fishing log created
+        '403':
+          $ref: '#/components/responses/ErrorBusiness' 
+
+
+components:
+  schemas:
+    # --------------------
+    # SCHÉMAS PRINCIPAUX 
+    # --------------------
+    User:
+      type: object
+      properties:
+        lastName:
+          type: string
+
+        firstName:
+          type: string
+
+        birthDate:
+          type: string
+          format: date
+
+        email:
+          type: string
+
+        phoneNumber:
+          type: string
+
+        address:
+          type: string
+
+        postalCode:
+          type: string
+
+        city:
+          type: string
+
+        spokenLanguages:
+          type: array
+          items:
+            type: string
+
+        photoUrl:
+          type: string
+
+        boatLicenseNumber:
+          type: string
+          description: "8 digits"
+          nullable: true
+
+        insuranceNumber:
+          type: string
+          description: "12 alphanumeric characters"
+          nullable: true
+
+        status:
+          type: string
+          enum:
+            - PARTICULIER
+            - PROFESSIONEL
+
+        companyName:
+          type: string
+          nullable: true
+
+        activityType:
+          type: string
+          enum:
+            - LOCATION
+            - GUIDE_DE_PECHE
+          nullable: true
+
+        siretNumber:
+          type: string
+          nullable: true
+
+        rcNumber:
+          type: string
+          nullable: true
+
+        boats:
+          type: array
+          items:
+            $ref: "#/Boat"
+
+        fishingLog:
+          $ref: "#/FishingLog"
+
+        trips:
+          type: array
+          items:
+            $ref: "#/Trip"
+
+        bookings:
+          type: array
+          items:
+            $ref: "#/Booking"
+
+    Booking:
+      type: object
+      properties:
+        reservationId:
+          type: integer
+
+        date:
+          type: string
+          format: date
+
+        numberOfSeats:
+          type: integer
+
+        totalPrice:
+          type: number
+          format: float
+
+        reservationCreator:
+          $ref: "#/User"
+
+        fishingTrip:
+          $ref: "#/Trip"
+
+    Trip:
+      type: object
+      properties:
+        tripId:
+          type: integer
+
+        title:
+          type: string
+
+        practicalInformation:
+          type: string
+
+        tripType:
+          type: string
+          enum:
+            - JOURNALIERE
+            - RECURRENTE
+
+        priceType:
+          type: string
+          enum:
+            - GLOBAL
+            - PAR_PERSONNE
+
+        startDates:
+          type: array
+          items:
+            type: string
+            format: date
+
+        endDates:
+          type: array
+          items:
+            type: string
+            format: date
+
+        departureTimes:
+          type: array
+          items:
+            type: string
+            format: time
+
+        endTimes:
+          type: array
+          items:
+            type: string
+            format: time
+
+        passengerCount:
+          type: integer
+
+        organizer:
+          $ref: "#/User"
+
+        usedBoat:
+          $ref: "#/Boat"
+
+        price:
+          type: number
+          format: float
+
+    Boat:
+      type: object
+      properties:
+        boatId:
+          type: integer
+
+        name:
+          type: string
+
+        description:
+          type: string
+
+        brand:
+          type: string
+
+        manufacturingYear:
+          type: integer
+
+        photoUrl:
+          type: string
+
+        permitType:
+          type: string
+          enum:
+            - COTIER
+            - FLUVIAL
+
+        boatType:
+          type: string
+          enum:
+            - OPEN
+            - CABINE
+            - CATAMARAN
+            - VOILIER
+            - JETSKI
+            - CANOE
+
+        equipment:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+              - SONDEUR
+              - VIVIER
+              - ECHELLE
+              - GPS
+              - PORTECANNES
+              - RADIO_VHF
+
+        depositAmount:
+          type: number
+          format: float
+
+        maxCapacity:
+          type: integer
+
+        numberOfBeds:
+          type: integer
+
+        homePort:
+          type: string
+
+        latitude:
+          type: number
+          format: float
+
+        longitude:
+          type: number
+          format: float
+
+        engineType:
+          type: string
+          enum:
+            - DIESEL
+            - ESSENCE
+            - AUCUN
+
+        enginePower:
+          type: number
+          format: float
+
+        owner:
+          $ref: "#/User"
+
+    FishingLogPage:
+      type: object
+      properties:
+        fishingLogPageId:
+          type: integer
+
+        photoUrl:
+          type: string
+
+        comment:
+          type: string
+
+        sizeCm:
+          type: number
+          format: float
+
+        weightKg:
+          type: number
+          format: float
+
+        fishingLocation:
+          type: string
+
+        fishingDate:
+          type: string
+          format: date
+
+        released:
+          type: boolean
+
+        fishingLog:
+          $ref: "#/FishingLog"
+
+    FishingLog:
+      type: object
+      properties:
+        fishingLogId:
+          type: integer
+
+        pages:
+          type: array
+          items:
+            $ref: "#/FishingLogPage"
+
+        logOwner:
+          $ref: "#/User"
+
+
+        
+    # --------------------
+    # SCHÉMAS DE FILTRAGE
+    # --------------------
+    UserFilterCriteria:
+      type: object
+      properties: 
+        lastName: {type: string}
+        firstName: {type: string}
+        address: {type: string}
+        postalCode: {type: string}
+        city: {type: string}
+        status: {type: string, enum: [PARTICULIER,PROFESSIONEL]}
+        activityType: {type: string, enum: [LOCATION,GUIDE_DE_PECHE]}
+
+    TripFilterCriteria:
+      type: object
+      properties: 
+        tripType: {type: string,enum: [JOURNALIERE,RECURRENTE]}
+        priceType: {type: string,enum: [GLOBAL,PAR_PERSONNE]}
+
+    BookingFilterCriteria:
+      type: object
+      properties: 
+        numberOfSeats: {type: integer}
+        date: {type: string, format: date}
+  
+    BoatFilterCriteria:
+      type: object
+      description: Criteria filter for boats
+      properties:
+        # Permet de filtrer par n'importe quel sous-ensemble de caractéristiques
+        maxCapacity: {type: integer} 
+        permitType: {type: string, enum: [COTIER, FLUVIAL]}
+        
+    GeoBoundingBox:
+      description: geographic filter
+      type: object
+      properties:
+        latMin: {type: number}
+        lonMin: {type: number}
+        latMax: {type: number}
+        lonMax: {type: number}
+        
+  parameters:
+    # --------------------
+    # PARAMÈTRES RÉUTILISABLES
+    # --------------------
+
+    #Paramètres de chemin
+    PathUserId:
+      name: userId
+      in: path
+      schema: {type: integer, format: int64}
+      description: Unique user ID.
+
+    PathBoatId:
+      name: boatId
+      in: path
+      schema: {type: integer, format: int64}
+      description: Unique boat ID.
+
+    PathTripId:
+      name: tripId
+      in: path
+      schema: {type: integer, format: int64}
+      description: Unique trip ID.
+
+    PathBookingId:
+      name: tripId
+      in: path
+      schema: {type: integer, format: int64}
+      description: Unique booking ID.
+      
+    PathPageId:
+      name: pageId
+      in: path
+      schema: {type: integer, format: int64}
+      description: Unique fishing log page ID.
+
+
+
+    # Paramètre pour le filtrage
+    UserFilter:
+      name: filtersUser
+      in: query
+      required: false
+      schema: 
+        $ref: '#/components/schemas/UserFilterCriteria'
+
+    TripFilter:
+      name: filtersTrip
+      in: query
+      required: false
+      schema: 
+        $ref: '#/components/schemas/TripFilterCriteria'
+
+    BookingFilter:
+      name: filtersBooking
+      in: query
+      required: false
+      schema: 
+        $ref: '#/components/schemas/BookingFilterCriteria'
+
+    BoatFilter:
+      name: filtersBoat
+      in: query
+      required: false
+      style: deepObject 
+      schema:
+        allOf:
+          - $ref: '#/components/schemas/BoatFilterCriteria'
+          - $ref: '#/components/schemas/GeoBoundingBox'
+      description: Allows you to filter boats by characteristics or geographical area.
+                  
+  # --------------------
+  # RÉPONSES RÉUTILISABLES
+  # --------------------
+  responses:
+    ErrorBusiness:
+      description: Error due to a business rule violation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorModel'
+    ListBoats:
+      description: Response containing a list of boats of an user.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Boat'
