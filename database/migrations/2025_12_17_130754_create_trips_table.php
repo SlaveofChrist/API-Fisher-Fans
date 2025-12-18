@@ -26,7 +26,7 @@ return new class extends Migration
             $table->integer('passengerCount');
             $table->decimal('price', 10, 2);
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('boat_id')->constrained('boats','idBoat')->onDelete('set null');
+            $table->foreignId('boat_id')->nullable()->constrained('boats','idBoat')->onDelete('set null');
             $table->timestamps();
         });
     }

@@ -242,7 +242,7 @@ paths:
         '500':
           description: Unexpected internal server error. 
     post:
-      tags: [FishingLogs]
+      tags: [Users]
       summary: Create a new Fishing Log Page
       operationId: createFishingLogbookPage
       requestBody:
@@ -272,7 +272,7 @@ paths:
       - $ref: '#/components/parameters/PathUserId'
       - $ref: '#/components/parameters/PathPageId'
     put:
-      tags: [FishingLogs]
+      tags: [Users]
       summary: Update a fishing log page 
       operationId: updateFishingLogbookPage
       requestBody:
@@ -296,7 +296,7 @@ paths:
           description: Unexpected internal server error.
 
     delete:
-      tags: [FishingLogs]
+      tags: [Users]
       summary: Delete a fishing log page
       operationId: deleteFishingLogbookPage
       responses:
@@ -672,13 +672,11 @@ paths:
         '500':
           description: Unexpected internal server error.
 
-  /v1/fishinglog:
+  /v1/fishinglogs:
     get:
       tags: [FishingLogs]
       summary: Retrieve or filter the list of fishing logs
       operationId: getAllFishingLogs
-      parameters:
-        - $ref: '#/components/parameters/FishingLogFilter' 
       responses:
         '200':
           description: Response containing a list of fishing logs.
@@ -698,9 +696,10 @@ paths:
           description: The requested resource does not exist.
         '500':
           description: Unexpected internal server error.
-    
+
+  /v1/users/{user}/fishinglogs:  
     post:
-      tags: [FishingLogs]
+      tags: [Users]
       summary: Create a new fishing log
       operationId: createFishingLog
       requestBody:
@@ -801,24 +800,6 @@ components:
           type: string
           nullable: true
 
-        boats:
-          type: array
-          items:
-            $ref: "#/components/schemas/Boat"
-
-        fishingLog:
-          $ref: "#/components/schemas/FishingLog"
-
-        trips:
-          type: array
-          items:
-            $ref: "#/components/schemas/Trip"
-
-        bookings:
-          type: array
-          items:
-            $ref: "#/components/schemas/Booking"
-
     Booking:
       type: object
       properties:
@@ -836,11 +817,11 @@ components:
           type: number
           format: float
 
-        reservationCreator:
-          $ref: "#/components/schemas/User"
+        user_id:
+          type: integer
 
-        fishingTrip:
-          $ref: "#/components/schemas/Trip"
+        trip_id:
+          type: integer
 
     Trip:
       type: object
@@ -893,11 +874,11 @@ components:
         passengerCount:
           type: integer
 
-        organizer:
-          $ref: "#/components/schemas/User"
+        user_id:
+          type: integer
 
-        usedBoat:
-          $ref: "#/components/schemas/Boat"
+        boat_id:
+          type: integer
 
         price:
           type: number
@@ -985,8 +966,8 @@ components:
           type: number
           format: float
 
-        owner:
-          $ref: "#/components/schemas/User"
+        user_id:
+          type: integer
 
     FishingLogPage:
       type: object
@@ -1018,8 +999,8 @@ components:
         released:
           type: boolean
 
-        fishingLog:
-          $ref: "#/components/schemas/FishingLog"
+        fishing_log_id:
+          type: integer
 
     FishingLog:
       type: object
@@ -1027,13 +1008,8 @@ components:
         fishingLogId:
           type: integer
 
-        pages:
-          type: array
-          items:
-            $ref: "#/components/schemas/FishingLogPage"
-
-        logOwner:
-          $ref: "#/components/schemas/User"
+        user_id:
+          type: integer
 
     ErrorModel:
       type: object

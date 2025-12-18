@@ -36,7 +36,7 @@ class FishingLogPage extends Model
      */
     public function log(): BelongsTo
     {
-         return $this->belongsTo(FishingLog::class);
+         return $this->belongsTo(FishingLog::class,'fishing_log_id','idFishingLog');
     }
 
 }

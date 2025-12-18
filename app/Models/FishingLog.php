@@ -40,6 +40,6 @@ class FishingLog extends Model
      */
     public function pages(): HasMany
     {
-        return $this->hasMany(FishingLogPage::class);
+        return $this->hasMany(FishingLogPage::class,'fishing_log_id','idFishingLog');
     }
 }
