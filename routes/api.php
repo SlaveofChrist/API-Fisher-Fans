@@ -3,11 +3,14 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use App\Http\Controllers\FishingLogController;
 
 Route::get('/users/{user}', function (User $user) {
     $token = $user->createToken('token-name');
     return $token->plainTextToken;
 });
+
+Route::apiResource('fishinglog', FishingLogController::class);
 
 /* Route::get('/login',function(){
     //
