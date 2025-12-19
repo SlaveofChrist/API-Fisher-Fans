@@ -60,10 +60,25 @@ Route::prefix('v1')->group(function () {
         });
 
         // Boats, Trips, Bookings
-        Route::get('boundingBox/boats', [BoatController::class, 'getAllBoatsInBoundingBox']);
-        Route::apiResource('boats', BoatController::class);
-        Route::apiResource('trips', TripController::class);
-        Route::apiResource('bookings', BookingController::class);
+        Route::get('boats/searching-bbox', [BoatController::class, 'getAllBoatsInBoundingBox']);
+        Route::apiResource('boats', BoatController::class)
+        ->missing(function (Request $request) {
+                return response()->json([
+                    'message' => 'Désolé, ce bateau est introuvable ou a été supprimé.'
+                ], 404);
+        });
+        Route::apiResource('trips', TripController::class)
+        ->missing(function (Request $request) {
+                return response()->json([
+                    'message' => 'Désolé, ce bateau est introuvable ou a été supprimé.'
+                ], 404);
+        });
+        Route::apiResource('bookings', BookingController::class)
+        ->missing(function (Request $request) {
+                return response()->json([
+                    'message' => 'Désolé, ce bateau est introuvable ou a été supprimé.'
+                ], 404);
+        });
         
         Route::get('fishinglogs', [FishingLogController::class, 'index']);
     });

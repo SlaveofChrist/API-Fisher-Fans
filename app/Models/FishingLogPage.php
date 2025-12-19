@@ -23,6 +23,7 @@ class FishingLogPage extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'comment',
         'sizeCm',
         'weightKg',
         'fishingLocation',

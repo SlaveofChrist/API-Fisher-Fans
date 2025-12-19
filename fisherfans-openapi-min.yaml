@@ -22,7 +22,34 @@ paths:
       summary: Retrieve or filter the list of users 
       operationId: getAllUsers
       parameters:
-        - $ref: '#/components/parameters/UserFilter'
+        - name: lastName
+          in: query
+          required: false
+          schema: {type: string}
+        - name: firstName
+          in: query
+          required: false
+          schema: {type: string}
+        - name: address
+          in: query
+          required: false
+          schema: {type: string}
+        - name: postalCode
+          in: query
+          required: false
+          schema: {type: string}
+        - name: city
+          in: query
+          required: false
+          schema: {type: string}
+        - name: status
+          in: query
+          required: false
+          schema: {type: string, enum: [PARTICULIER,PROFESSIONEL]}
+        - name: activityType
+          in: query
+          required: false
+          schema: {type: string, enum: [LOCATION,GUIDE_DE_PECHE]}
       responses:
         '200':
           description: List of users.
@@ -318,7 +345,16 @@ paths:
       summary: Retrieve or filter the list of boats 
       operationId: getAllBoats
       parameters:
-        - $ref: '#/components/parameters/BoatFilter' 
+        - name: maxCapacity
+          in: query
+          required: false
+          schema: {type: integer}
+          description: capactity maximum of boats.
+        - name: permitType
+          in: query
+          required: false
+          schema: {type: string, enum: [COTIER, FLUVIAL]}
+          description: permit type of boat.
       responses:
         '200':
           $ref: '#/components/responses/ListBoats'
@@ -357,14 +393,30 @@ paths:
           description: The sent data format is not supported (e.g., XML instead of JSON).
         '500':
           description: Unexpected internal server error. 
-  
-  /v1/boundingBox/boats:
+          
+  /v1/boats?latMin=val1&longMin=val2&latMax=val3&longMax=val4:
     get:
       tags: [Boats]
       summary: Retrieve the list of boats in an area geographic
       operationId: getAllBoatsInBoundingBox
       parameters: 
-        - $ref: '#/components/parameters/BoatFilterByBoundingBox'
+        - name: latMin
+          in: query
+          required: true
+          schema: { type: number, format: float }
+        - name: latMax
+          in: query
+          required: true
+          schema: { type: number, format: float }
+        - name: longMin
+          in: query
+          required: true
+          schema: { type: number, format: float }
+        - name: longMax
+          in: query
+          required: true
+          schema: { type: number, format: float }
+          description: Allows you to filter boats by geographical area.
       responses:
         '200':
           $ref: '#/components/responses/ListBoats'
@@ -448,16 +500,25 @@ paths:
       summary: Retrieve or filter the list of trips 
       operationId: getAllTrips
       parameters:
-        - $ref: '#/components/parameters/TripFilter' 
+        - name: tripType
+          in: query
+          required: false
+          schema: {type: string,enum: [JOURNALIERE,RECURRENTE]}
+          description: trip type.
+        - name: priceType
+          in: query
+          required: false
+          schema: {type: string,enum: [GLOBAL,PAR_PERSONNE]}
+          description: type price.
       responses:
         '200':
           description: Response containing a list of trips.
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Trip'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Trip'
         '400':
           description: The request is malformed or invalid.
         '401':
@@ -563,7 +624,16 @@ paths:
       summary: Retrieve or filter the list of bookings 
       operationId: getAllBookings
       parameters:
-        - $ref: '#/components/parameters/BookingFilter' 
+        - name: numberOfSeats
+          in: query
+          required: false
+          schema: {type: integer}
+          description: number of seats.
+        - name: dateOfBooking
+          in: query
+          required: false
+          schema: {type: string, format: date}
+          description: Booking's date. 
       responses:
         '200':
           description: Response containing a list of bookings.
@@ -697,7 +767,7 @@ paths:
         '500':
           description: Unexpected internal server error.
 
-  /v1/users/{user}/fishinglogs:  
+  /v1/users/{userId}/fishinglogs:  
     post:
       tags: [Users]
       summary: Create a new fishing log
@@ -1018,47 +1088,7 @@ components:
         message: {type: string, description: Description of error.}
 
 
-        
-    # --------------------
-    # SCHÉMAS DE FILTRAGE
-    # --------------------
-    UserFilterCriteria:
-      type: object
-      properties: 
-        lastName: {type: string}
-        firstName: {type: string}
-        address: {type: string}
-        postalCode: {type: string}
-        city: {type: string}
-        status: {type: string, enum: [PARTICULIER,PROFESSIONEL]}
-        activityType: {type: string, enum: [LOCATION,GUIDE_DE_PECHE]}
-
-    TripFilterCriteria:
-      type: object
-      properties: 
-        tripType: {type: string,enum: [JOURNALIERE,RECURRENTE]}
-        priceType: {type: string,enum: [GLOBAL,PAR_PERSONNE]}
-
-    BookingFilterCriteria:
-      type: object
-      properties: 
-        numberOfSeats: {type: integer}
-        date: {type: string, format: date}
-  
-    BoatFilterCriteria:
-      type: object
-      description: Criteria filter for boats
-      properties:
-        # Permet de filtrer par n'importe quel sous-ensemble de caractéristiques
-        maxCapacity: {type: integer} 
-        permitType: {type: string, enum: [COTIER, FLUVIAL]}
-        
-    GeoBoundingBox:
-      description: geographic filter
-      type: object
-      properties:
-        latitude: {type: number}
-        longitude: {type: number}
+     
   parameters:
     # --------------------
     # PARAMÈTRES RÉUTILISABLES
@@ -1084,7 +1114,7 @@ components:
       description: Unique trip ID.
 
     PathBookingId:
-      name: tripId
+      name: bookingId
       in: path
       schema: {type: integer, format: int64}
       description: Unique booking ID.
@@ -1095,45 +1125,6 @@ components:
       schema: {type: integer, format: int64}
       description: Unique fishing log page ID.
 
-
-
-    # Paramètre pour le filtrage
-    UserFilter:
-      name: filtersUser
-      in: query
-      required: false
-      schema: 
-        $ref: '#/components/schemas/UserFilterCriteria'
-
-    TripFilter:
-      name: filtersTrip
-      in: query
-      required: false
-      schema: 
-        $ref: '#/components/schemas/TripFilterCriteria'
-
-    BookingFilter:
-      name: filtersBooking
-      in: query
-      required: false
-      schema: 
-        $ref: '#/components/schemas/BookingFilterCriteria'
-
-    BoatFilter:
-      name: filtersBoat
-      in: query
-      required: false
-      schema:
-        $ref: '#/components/schemas/BoatFilterCriteria'
-      description: Allows you to filter boats by characteristics.
-
-    BoatFilterByBoundingBox:
-      name: filtersBoatByBoundingBox
-      in: query
-      required: false
-      schema:
-        $ref: '#/components/schemas/GeoBoundingBox'
-      description: Allows you to filter boats by geographical area.  
   # --------------------
   # RÉPONSES RÉUTILISABLES
   # --------------------

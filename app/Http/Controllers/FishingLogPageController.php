@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\FishingLog;
 use App\Models\FishingLogPage;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 
 class FishingLogPageController extends Controller
@@ -12,9 +13,9 @@ class FishingLogPageController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(string $idUser)
     {
-        $idFishingLog = User::find($request->segments()[3])->fishingLog->idFishingLog;
+        $idFishingLog = User::find($idUser)->fishingLog->idFishingLog;
         return FishingLog::find($idFishingLog)->pages;
         
     }
@@ -38,7 +39,7 @@ class FishingLogPageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $idUser, string $idFishingLogPage)
     {
         $validated = $request->validate([
             'sizeCm'        => 'sometimes|decimal',
@@ -47,28 +48,37 @@ class FishingLogPageController extends Controller
             'fishingDate'       => 'sometimes|date',
             'released'         => 'sometimes|boolean',
             'photoUrl' => 'sometimes|string',
-            'comment' => 'sometimes|string',
+            'comment' => 'sometimes|string|max:10000',
         ]);
 
-        $idFishingLog = User::find($request->segments()[3])->fishingLog->idFishingLog;
+       // $validated['comment'];
+
+        $idFishingLog = User::find($idUser)->fishingLog->idFishingLog;
         $fishingLogPage = FishingLog::find($idFishingLog)->pages
-        ->where('idFishingLogPage',$id)
+        ->where('idFishingLogPage',$idFishingLogPage)
         ->first();
     
-        //$fishingLogPage->update($validated);
+        $fishingLogPage->update($validated);
         
         
         return response()->json([
             'message' => 'Page de carnet de pêche mise à jour avec succès.',
-            'user'    => $fishingLogPage
+            'fishingLogPage'    => $fishingLogPage
         ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $idUser,string $idFishingLogPage)
     {
-        //
+        $idFishingLog = User::find($idUser)->fishingLog->idFishingLog;
+        $fishingLogPage = FishingLog::find($idFishingLog)->pages
+        ->where('idFishingLogPage',$idFishingLogPage)
+        ->first();
+
+        $fishingLogPage->delete();
+
+        return response()->json(null, 204);
     }
 }
