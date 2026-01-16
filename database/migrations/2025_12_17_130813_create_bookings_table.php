@@ -17,7 +17,7 @@ return new class extends Migration
         $table->integer('numberOfSeats');
         $table->decimal('totalPrice', 8, 2);
         $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-        $table->foreignId('trip_id')->constrained('trips','idTrip')->onDelete('set null');
+        $table->foreignId('trip_id')->nullable()->constrained('trips','idTrip')->onDelete('set null');
         $table->timestamps();
         });
     }
