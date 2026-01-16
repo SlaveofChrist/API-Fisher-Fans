@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fisher-fans-api
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      # Monter le code source pour le développement
+      - .:/app
+      # Monter la base de données SQLite (persistent)
+      - ./storage/database:/app/storage/database
+      # Monter les logs (persistent)
+      - ./storage/logs:/app/storage/logs
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=sqlite
+    networks:
+      - fisher-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  fisher-network:
+    driver: bridge
