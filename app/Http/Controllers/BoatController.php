@@ -104,4 +104,27 @@ class BoatController extends Controller
             'message' => 'Bateau supprimé définitivement'
         ], 204);
     }
+
+    /**
+     * Récupère la liste des bateaux dans une zone géographique (Bounding Box).
+     */
+    public function getAllBoatsInBoundingBox(Request $request)
+    {
+        // 1. Validation des paramètres de query (basée sur votre fichier OAS)
+        $validated = $request->validate([
+            'latMin'  => 'required|numeric',
+            'latMax'  => 'required|numeric',
+            'longMin' => 'required|numeric',
+            'longMax' => 'required|numeric',
+        ]);
+
+        // 2. Requête filtrée
+        // On utilise whereBetween pour vérifier que les coordonnées sont dans les bornes
+        $boats = Boat::whereBetween('latitude', [$validated['latMin'], $validated['latMax']])
+                    ->whereBetween('longitude', [$validated['longMin'], $validated['longMax']])
+                    ->get();
+
+        // 3. Retour de la réponse
+        return response()->json($boats);
+    }
 }
