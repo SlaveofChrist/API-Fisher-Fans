@@ -36,6 +36,7 @@ class UserController extends Controller
         'city'            => 'required|string|max:255',
         'spokenLanguages' => 'nullable|array',
         'status'          => 'required|in:PARTICULIER,PROFESSIONNEL',
+        'boatLicenseNumber' => 'nullable|string',
     ]);
 
     // 2. Création de l'utilisateur avec hachage du mot de passe
@@ -51,6 +52,7 @@ class UserController extends Controller
         'city'            => $validated['city'],
         'spokenLanguages' => $validated['spokenLanguages'] ?? [],
         'status'          => $validated['status'],
+        "boatLicenseNumber" => $validated['boatLicenseNumber'] ?? ""
     ]);
 
     // 3. Initialisation des ressources liées (Carnet de pêche)
@@ -86,6 +88,7 @@ class UserController extends Controller
             'phoneNumber'     => 'sometimes|string',
             'address'         => 'sometimes|string',
             'postalCode'      => 'sometimes|string',
+            'boatLicenseNumber' => 'sometimes|string',
             'city'            => 'sometimes|string',
             'status'          => 'sometimes|in:PARTICULIER,PROFESSIONNEL',
             'spokenLanguages' => 'nullable|array',

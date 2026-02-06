@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Boat;
+use App\Models\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -51,8 +52,14 @@ class BoatController extends Controller
         'user_id' => 'required|exists:users,id',
     ]);
 
+    $user = User::findOrFail($request->user_id);
+    if (empty($user->boatLicenseNumber)) {
+        return response()->json([
+            'code' => 403,
+            'message' => "Action interdite : Vous devez renseigner un numéro de permis bateau dans votre profil."
+        ], 403);
+    }
     $boat = Boat::create($validated);
-
     return response()->json([
         'message' => 'Bateau créé avec succès',
         'data' => $boat

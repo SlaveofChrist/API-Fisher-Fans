@@ -31,6 +31,7 @@ class User extends Authenticatable
         'city',
         'status',
         'password',
+        'boatLicenseNumber',
     ];
 
     /**

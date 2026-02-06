@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Trip;
+use App\Models\Boat;
 use Illuminate\Http\Request;
 
 class TripController extends Controller
@@ -39,6 +40,14 @@ class TripController extends Controller
             'user_id' => 'required|exists:users,id',
             'boat_id' => 'required|exists:boats,idBoat',
         ]);
+
+        $hasBoat = Boat::where('user_id', $request->user_id)->exists();
+        if (!$hasBoat) {
+            return response()->json([
+                'code' => 403,
+                'message' => "Action interdite : Vous devez posséder un bateau pour créer une sortie de pêche."
+            ], 403);
+        }
 
         $trip = Trip::create($validated);
         return response()->json($trip, 201);
