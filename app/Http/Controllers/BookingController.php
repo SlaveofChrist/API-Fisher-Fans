@@ -57,7 +57,7 @@ class BookingController extends Controller
         ]);
 
         $booking->update($validated);
-        return response()->json($booking);
+        return response()->json($booking,200);
     }
 
     /**

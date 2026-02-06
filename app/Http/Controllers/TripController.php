@@ -75,7 +75,7 @@ class TripController extends Controller
         ]);
 
         $trip->update($validated);
-        return response()->json($trip);
+        return response()->json($trip,200);
     }
 
     /**
